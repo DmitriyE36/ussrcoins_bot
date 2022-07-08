@@ -15,8 +15,9 @@ def get_coins(url):
     coins_dict = dict(zip(safety, price))
     return coins_dict
 
+"""
 if __name__ == '__main__':
     fcoins_dict = get_coins(url)
     print(fcoins_dict)
-
+"""
     
