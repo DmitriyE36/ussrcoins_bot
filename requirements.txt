@@ -1,2 +1,4 @@
 requests==2.28.1
 bs4==0.0.1
+python-telegram-bot[socks]==13.13
+structlog==21.5.0
