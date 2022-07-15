@@ -2,45 +2,45 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Conve
 import logging
 import structlog
 import settings
-from ussrcoins.parser import get_coins, get_coin_url
+from ussrcoins.parser import get_coin_price, get_coin_url
 
 logging.basicConfig(level = logging.INFO)
 logger = structlog.getLogger()
 
 def start_user(update, context):
     logger.debug('Вызван /start')
-    update.message.reply_text('Введите номинал монеты в формате "X коп. (Х руб.) ХХХХ года"')
+    update.message.reply_text('Введите год интересующей Вас монеты с 1921 по 1930')
     return 1
-  
-def coin_user(update,context):
-    input_coin = update.message.text
-    context.user_data['input_coin'] = input_coin
-    url = get_coin_url(input_coin)
-    coin_dict = get_coins(url)
-    safety = coin_dict.keys()
-    safe = ', '.join(safety)
-    update.message.reply_text(f'Введите степень сохранности монеты из предложенного списка {safe}')
+
+def year_coins_user(update, context):
+    input_year = update.message.text
+    logger.debug(input_year)
+    context.user_data['input_year'] = input_year
+    coin_url = get_coin_url(input_year)
+    coins_name = coin_url.keys()
+    coins = ', '.join(coins_name)
+    update.message.reply_text(f'Введите название монеты из предложенного списка: [{coins}]')
     return 2
-
-def safety_user(update,context): 
-    input_safety = update.message.text
-    input_coin = context.user_data['input_coin']
-    url = get_coin_url(input_coin)
-    logger.debug(input_safety)
-    coin_dict = get_coins(url)
-    price_coin = coin_dict[input_safety]
-    logger.debug(price_coin)
-    update.message.reply_text(f'Стоимость монеты: {price_coin}')
+     
+def coin_user(update, context):
+    input_coin = update.message.text
+    logger.debug(input_coin)
+    context.user_data['input_coin'] = input_coin
+    input_year = context.user_data['input_year']
+    coin_url = get_coin_url(input_year)
+    url = coin_url[input_coin]
+    safety_price = get_coin_price(url)
+    update.message.reply_text(f'Стоимость монеты по степени сохранности:\n {safety_price}')
     return ConversationHandler .END
-
+   
 def coin_bot():
     ussrbot = Updater(settings.APY_KEY, use_context=True)
     dp = ussrbot.dispatcher
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler("start", start_user)],
         states={
-            1: [MessageHandler(Filters.text, coin_user)],
-            2: [MessageHandler(Filters.text, safety_user)]
+            1: [MessageHandler(Filters.text, year_coins_user)],
+            2: [MessageHandler(Filters.text, coin_user)]
         },
         fallbacks=[CommandHandler("start", start_user)]
     )
