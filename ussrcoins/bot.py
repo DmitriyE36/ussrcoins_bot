@@ -15,12 +15,19 @@ def year_coins_user(update, context):
     try:
         input_year = update.message.text
         logger.debug(input_year)
-        context.user_data['input_year'] = input_year
-        coin_url = get_coin_url(input_year)
-        coins_name = coin_url.keys()
-        coins = ', '.join(coins_name)
-        update.message.reply_text(f'Введите название монеты из предложенного списка: [{coins}]')
-        return 2
+        if '1947' in input_year:
+            update.message.reply_text('В 1947,1959,1960 годах не было выпуска монет, введите другой')
+        elif '1959' in input_year:
+            update.message.reply_text('В 1947,1959,1960 годах не было выпуска монет, введите другой')
+        elif '1960' in input_year:
+            update.message.reply_text('В 1947,1959,1960 годах не было выпуска монет, введите другой')
+        else:
+            context.user_data['input_year'] = input_year
+            coin_url = get_coin_url(input_year)
+            coins_name = coin_url.keys()
+            coins = ', '.join(coins_name)
+            update.message.reply_text(f'Введите название монеты из предложенного списка: [{coins}]')
+            return 2
     except(AttributeError):
         update.message.reply_text('Введите год из указанного периода')
         return 1
