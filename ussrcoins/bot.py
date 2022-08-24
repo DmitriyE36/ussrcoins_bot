@@ -8,10 +8,9 @@ logging.basicConfig(level = logging.INFO)
 logger = structlog.getLogger()
 
 def start_user(update, context):
-    logger.debug('Вызван /start')
-    update.message.reply_text('Введите год интересующей Вас монеты с 1921 по 1930 в формате "ГГГГ"')
-    return 1
-
+        logger.debug('Вызван /start')
+        update.message.reply_text('Введите год интересующей Вас монеты с 1921 по 1991 в формате "ГГГГ"')
+        return 1
 def year_coins_user(update, context):
     try:
         input_year = update.message.text
