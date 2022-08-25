@@ -1,3 +1,4 @@
+from email.mime import image
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler
 import logging
 import structlog
@@ -25,8 +26,8 @@ def year_coins_user(update, context):
             context.user_data['input_year'] = input_year
             coin_url = get_coin_url(input_year)
             coins_name = coin_url.keys()
-            coins = ', '.join(coins_name)
-            update.message.reply_text(f'Введите название монеты из предложенного списка: [{coins}]')
+            coins = '\n '.join(coins_name)
+            update.message.reply_text(f'В {input_year} году чеканили монеты достоинством:\n {coins}\n\n Ведите нужный Вам номинал из списка')
             return 2
     except(AttributeError):
         update.message.reply_text('Введите год из указанного периода')
@@ -43,7 +44,7 @@ def coin_user(update, context):
         update.message.reply_text(f'Стоимость монеты по степени сохранности:\n {safety_price}\n\n Для нового запроса нажмите /start' )
         return ConversationHandler .END
     else:
-        update.message.reply_text('Такой монеты в списке нет, напишите правильно')
+        update.message.reply_text('Ведите номинал монеты так, как он указан в списке')
         return 2
     
 def new_request(update, context):
